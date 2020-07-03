@@ -51,45 +51,45 @@ async def on_ready():
     #     print("{}: Resumed".format(curtime.get_time()))
 
 
-# @client.event
-# async def on_command_error(ctx, error):
-#     print(error)
-#     if isinstance(error, commands.NoPrivateMessage):
-#         await ctx.send("This command cannot be used in private messages.")
-#
-#     elif isinstance(error, commands.DisabledCommand):
-#         await ctx.send("Sorry. This command is disabled and cannot be used.")
-#
-#     elif isinstance(error, commands.CheckFailure):
-#         await ctx.send("Sorry. You don't have permission to use this command.")
-#
-#     elif isinstance(error, commands.MissingRequiredArgument):
-#         await ctx.send("You are missing a parameter. Do `.help [command name]` for more info")
-#
-#     elif isinstance(error, commands.NotOwner):
-#         await ctx.send("Only the bot's owner can use this command")
-#
-#     elif isinstance(error, commands.BotMissingPermissions):
-#         await ctx.send("I need special permissions to use that command.")
-#
-#     elif isinstance(error, commands.BadArgument):
-#         await ctx.send(error)
-#
-#     elif isinstance(error, commands.TooManyArguments):
-#         await ctx.send("You have too many arguments")
-#
-#     elif isinstance(error, commands.CommandOnCooldown):
-#         await ctx.send(
-#             "That command is on a cooldown for `{}` more seconds. It can be used every `{}` seconds".format(
-#                 commands.CommandOnCooldown.cooldown, str(commands.CommandOnCooldown.retry_after)[:5]))
-#
-#     """
-#     elif isinstance(error, commands.BadArgument):
-#         command = ctx.message.content.split()[1]
-#         await ctx.send("Missing an argument: " + command)
-#     elif isinstance(error, commands.CommandNotFound):
-#         await ctx.send("I don't recognize that command")
-#     """
+@client.event
+async def on_command_error(ctx, error):
+    print(error)
+    if isinstance(error, commands.NoPrivateMessage):
+        await ctx.send("This command cannot be used in private messages.")
+
+    elif isinstance(error, commands.DisabledCommand):
+        await ctx.send("Sorry. This command is disabled and cannot be used.")
+
+    elif isinstance(error, commands.CheckFailure):
+        await ctx.send("Sorry. You don't have permission to use this command.")
+
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("You are missing a parameter. Do `.help [command name]` for more info")
+
+    elif isinstance(error, commands.NotOwner):
+        await ctx.send("Only the bot's owner can use this command")
+
+    elif isinstance(error, commands.BotMissingPermissions):
+        await ctx.send("I need special permissions to use that command.")
+
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send(error)
+
+    elif isinstance(error, commands.TooManyArguments):
+        await ctx.send("You have too many arguments")
+
+    elif isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(
+            "That command is on a cooldown for `{}` more seconds. It can be used every `{}` seconds".format(
+                commands.CommandOnCooldown.cooldown, str(commands.CommandOnCooldown.retry_after)[:5]))
+
+    """
+    elif isinstance(error, commands.BadArgument):
+        command = ctx.message.content.split()[1]
+        await ctx.send("Missing an argument: " + command)
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.send("I don't recognize that command")
+    """
 
 def calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, deathspdt, rdiff, kad, deathspm, upm):
     return round(10 * ((0.3 * (
@@ -107,7 +107,7 @@ def calc_score(dpm, cpm, kad, rdiff, dahr, dadt, deathpm, dtm, kpm, kd):
 async def gamescore(ctx, *args: str):
     if (args is None) or (len(args) > 1):
         await ctx.send("You need give a logs.tf ID or link, e.g. \n"
-                       "`!score http://logs.tf/match id`")
+                       "`!score http://logs.tf/[match_id]`")
         return
 
     id = args[0].lower()
