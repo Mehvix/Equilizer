@@ -91,16 +91,16 @@ async def on_ready():
 #         await ctx.send("I don't recognize that command")
 #     """
 
-def calc_score_med(heal, cpm, uph, dtm, dropspm, dropspu, deathspdt, rdiff, kad, deathspm, upm):
-    return round(10 * ((0.7 * (
-            (heal / 1800) + (cpm / 5) + (uph / 0.00025) + (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (
+def calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, deathspdt, rdiff, kad, deathspm, upm):
+    return round(10 * ((0.3 * (
+            (hpm / 60) + (cpm / 5) + (uph / 0.00025) + (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (
             deathspdt / 0.00075) + (rdiff / 0.08) + (kad / 0.03) - (deathspm / 0.08) + (
-                    upm / 0.05))) + 15)) / 10
+                    upm / 0.05))) + 30)) / 10
 
 
 def calc_score(dpm, cpm, kad, rdiff, dahr, dadt, deathpm, dtm, kpm, kd):
-    return round(10 * ((1.3 * ((dpm / 16) + (cpm / 3) + (kad / 0.6) + (rdiff / 0.075) + (dahr / 0.25) + (dadt / 0.2) - (
-            deathpm / 0.1) - (dtm / 40) + (kpm / 0.1) + (kd / 0.2))) + 10)) / 10
+    return round(10 * ((0.4 * ((dpm / 16) + (cpm / 3) + (kad / 0.6) + (rdiff / 0.075) + (dahr / 0.25) + (dadt / 0.2) - (
+            deathpm / 0.1) - (dtm / 40) + (kpm / 0.1) + (kd / 0.2))) + 25)) / 10
 
 
 @client.command(aliases=["score", "gamematchscore"], description="Gets game score", brief="Gets score")
@@ -141,9 +141,9 @@ async def gamescore(ctx, *args: str):
 
                     emote = ""
                     if type == "medic":
-                        total_heals = value['heal']
+                        hpm = value['heal'] / match_time
                         cpm = value['cpc'] / match_time
-                        uph = value['ubers'] / total_heals
+                        uph = 0 if value['heal'] == 0 else value['ubers'] / value['heal']
                         dtm = value['dt'] / match_time
                         dropspm = value['drops'] / match_time
                         dropspu = 0 if value['ubers'] == 0 else value['drops'] / value['ubers']
@@ -152,7 +152,7 @@ async def gamescore(ctx, *args: str):
                         deathpm = value['deaths'] / match_time
                         upm = (value['ubers'] + value['drops']) / match_time
 
-                        score = calc_score_med(total_heals, cpm, uph, dtm, dropspm, dropspu, dropspdt, rdiff, kad,
+                        score = calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, dropspdt, rdiff, kad,
                                                deathpm, upm)
 
                         print(player_team)
