@@ -93,7 +93,7 @@ async def on_ready():
 
 def calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, deathspdt, rdiff, kad, deathspm, upm):
     return round(10 * ((0.3 * (
-            (hpm / 60) + (cpm / 5) + (uph / 0.00025) + (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (
+            (hpm / 60) + (cpm / 5) + (uph / 0.00025) - (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (
             deathspdt / 0.00075) + (rdiff / 0.08) + (kad / 0.03) - (deathspm / 0.08) + (
                     upm / 0.05))) + 30)) / 10
 
@@ -107,7 +107,7 @@ def calc_score(dpm, cpm, kad, rdiff, dahr, dadt, deathpm, dtm, kpm, kd):
 async def gamescore(ctx, *args: str):
     if (args is None) or (len(args) > 1):
         await ctx.send("You need give a logs.tf ID or link, e.g. \n"
-                       "`!score http://logs.tf/match id`")
+                       "`!score http://logs.tf/matchid`")
         return
 
     id = args[0].lower()
@@ -178,15 +178,35 @@ async def gamescore(ctx, *args: str):
                                 emote = "[RED Scout] -"
                             elif type == "soldier":
                                 emote = "[RED Solly] -"
+                            elif type == "pyro":
+                                emote = "[RED Pyro] -"
                             elif type == "demoman":
                                 emote = "[RED Demo] -"
+                            elif type == "heavyweapons":
+                                emote = "[RED Heavy] -"
+                            elif type == "engineer":
+                                emote = "[RED Engie] -"
+                            elif type == "sniper":
+                                emote = "[RED Sniper] -"
+                            elif type == "spy":
+                                emote = "[RED Spy] -"
                         else:
                             if type == "scout":
                                 emote = "[BLU Scout] -"
                             elif type == "soldier":
                                 emote = "[BLU Solly] -"
+                            elif type == "pyro":
+                                emote = "[BLU Pyro] -"
                             elif type == "demoman":
                                 emote = "[BLU Demo] -"
+                            elif type == "heavyweapons":
+                                emote = "[BLU Heavy] -"
+                            elif type == "engineer":
+                                emote = "[BLU Engie] -"
+                            elif type == "sniper":
+                                emote = "[BLU Sniper] -"
+                            elif type == "spy":
+                                emote = "[BLU Spy] -"
 
                     all_players += [[names[key], emote, score]]
 
