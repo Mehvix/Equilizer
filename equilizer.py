@@ -51,63 +51,59 @@ async def on_ready():
     #     print("{}: Resumed".format(curtime.get_time()))
 
 
-@client.event
-async def on_command_error(ctx, error):
-    print(error)
-    if isinstance(error, commands.NoPrivateMessage):
-        await ctx.send("This command cannot be used in private messages.")
+# @client.event
+# async def on_command_error(ctx, error):
+#     print(error)
+#     if isinstance(error, commands.NoPrivateMessage):
+#         await ctx.send("This command cannot be used in private messages.")
+#
+#     elif isinstance(error, commands.DisabledCommand):
+#         await ctx.send("Sorry. This command is disabled and cannot be used.")
+#
+#     elif isinstance(error, commands.CheckFailure):
+#         await ctx.send("Sorry. You don't have permission to use this command.")
+#
+#     elif isinstance(error, commands.MissingRequiredArgument):
+#         await ctx.send("You are missing a parameter. Do `.help [command name]` for more info")
+#
+#     elif isinstance(error, commands.NotOwner):
+#         await ctx.send("Only the bot's owner can use this command")
+#
+#     elif isinstance(error, commands.BotMissingPermissions):
+#         await ctx.send("I need special permissions to use that command.")
+#
+#     elif isinstance(error, commands.BadArgument):
+#         await ctx.send(error)
+#
+#     elif isinstance(error, commands.TooManyArguments):
+#         await ctx.send("You have too many arguments")
+#
+#     elif isinstance(error, commands.CommandOnCooldown):
+#         await ctx.send(
+#             "That command is on a cooldown for `{}` more seconds. It can be used every `{}` seconds".format(
+#                 commands.CommandOnCooldown.cooldown, str(commands.CommandOnCooldown.retry_after)[:5]))
+#
+#     """
+#     elif isinstance(error, commands.BadArgument):
+#         command = ctx.message.content.split()[1]
+#         await ctx.send("Missing an argument: " + command)
+#     elif isinstance(error, commands.CommandNotFound):
+#         await ctx.send("I don't recognize that command")
+#     """
 
-    elif isinstance(error, commands.DisabledCommand):
-        await ctx.send("Sorry. This command is disabled and cannot be used.")
-
-    elif isinstance(error, commands.CheckFailure):
-        await ctx.send("Sorry. You don't have permission to use this command.")
-
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("You are missing a parameter. Do `.help [command name]` for more info")
-
-    elif isinstance(error, commands.NotOwner):
-        await ctx.send("Only the bot's owner can use this command")
-
-    elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.send("I need special permissions to use that command.")
-
-    elif isinstance(error, commands.BadArgument):
-        await ctx.send(error)
-
-    elif isinstance(error, commands.TooManyArguments):
-        await ctx.send("You have too many arguments")
-
-    elif isinstance(error, commands.CommandOnCooldown):
-        await ctx.send(
-            "That command is on a cooldown for `{}` more seconds. It can be used every `{}` seconds".format(
-                commands.CommandOnCooldown.cooldown, str(commands.CommandOnCooldown.retry_after)[:5]))
-
-    """
-    elif isinstance(error, commands.BadArgument):
-        command = ctx.message.content.split()[1]
-        await ctx.send("Missing an argument: " + command)
-    elif isinstance(error, commands.CommandNotFound):
-        await ctx.send("I don't recognize that command")
-    """
-
-def calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, deathspdt, rdiff, kad, deathspm, upm):
-    return round(10 * ((0.3 * (
-            (hpm / 60) + (cpm / 5) + (uph / 0.00025) + (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (
-            deathspdt / 0.00075) + (rdiff / 0.08) + (kad / 0.03) - (deathspm / 0.08) + (
-                    upm / 0.05))) + 30)) / 10
+def calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, deathspdt, kad, deathspm, upm):
+    return round(10 * ((0.3 * ((hpm / 60) + (cpm / 5) + (uph / 0.00025) - (dtm / 75) - (dropspm / 0.6) - (dropspu / 0.025) - (deathspdt / 0.00075) + (kad / 0.03) - (deathspm / 0.08) + (upm / 0.05))) + 30)) / 10
 
 
-def calc_score(dpm, cpm, kad, rdiff, dahr, dadt, deathpm, dtm, kpm, kd):
-    return round(10 * ((0.4 * ((dpm / 16) + (cpm / 3) + (kad / 0.6) + (rdiff / 0.075) + (dahr / 0.25) + (dadt / 0.2) - (
-            deathpm / 0.1) - (dtm / 40) + (kpm / 0.1) + (kd / 0.2))) + 25)) / 10
+def calc_score(dpm, cpm, kad, dahr, dadt, deathpm, dtm, kpm, kd):
+    return round(10 * ((0.4 * ((dpm / 16) + (cpm / 3) + (kad / 0.6) + (dahr / 0.25) + (dadt / 0.2) - (deathpm / 0.1) - (dtm / 40) + (kpm / 0.1) + (kd / 0.2))) + 25)) / 10
 
 
 @client.command(aliases=["score", "gamematchscore"], description="Gets game score", brief="Gets score")
 async def gamescore(ctx, *args: str):
     if (args is None) or (len(args) > 1):
         await ctx.send("You need give a logs.tf ID or link, e.g. \n"
-                       "`!score http://logs.tf/[match_id]`")
+                       "`!score http://logs.tf/matchid`")
         return
 
     id = args[0].lower()
@@ -131,14 +127,6 @@ async def gamescore(ctx, *args: str):
                     type = value["class_stats"][0]["type"]  # gets the first class, maybe add multi-class later?
                     match_time = data['length']
                     player_team = value['team']
-
-                    red_score = data["teams"]["Red"]["score"]
-                    blu_score = data["teams"]["Blue"]["score"]
-                    if player_team == 'Red':
-                        rdiff = red_score - blu_score
-                    else:
-                        rdiff = blu_score - red_score
-
                     emote = ""
                     if type == "medic":
                         hpm = value['heal'] / match_time
@@ -152,14 +140,14 @@ async def gamescore(ctx, *args: str):
                         deathpm = value['deaths'] / match_time
                         upm = (value['ubers'] + value['drops']) / match_time
 
-                        score = calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, dropspdt, rdiff, kad,
+                        score = calc_score_med(hpm, cpm, uph, dtm, dropspm, dropspu, dropspdt, kad,
                                                deathpm, upm)
 
                         print(player_team)
                         if player_team == "Red":
-                            emote = client.get_emoji(728490510116978708)
+                            emote = "[RED Medic] -"
                         else:
-                            emote = client.get_emoji(728490509802274887)
+                            emote = "[BLU Medic] -"
                     else:
                         dpm = value['dapm']
                         cpm = (value['cpc']) / match_time
@@ -171,22 +159,42 @@ async def gamescore(ctx, *args: str):
                         kpm = value['kills'] / match_time
                         kd = float(value['kpd'])
 
-                        score = calc_score(dpm, cpm, kad, rdiff, dahr, dadt, deathpm, dtm, kpm, kd)
+                        score = calc_score(dpm, cpm, kad, dahr, dadt, deathpm, dtm, kpm, kd)
 
                         if player_team == "Red":
                             if type == "scout":
-                                emote = client.get_emoji(728490510137950279)
+                                emote = "[RED Scout] -"
                             elif type == "soldier":
-                                emote = client.get_emoji(728490509747748905)
+                                emote = "[RED Solly] -"
+                            elif type == "pyro":
+                                emote = "[RED Pyro] -"
                             elif type == "demoman":
-                                emote = client.get_emoji(728490509869514753)
+                                emote = "[RED Demo] -"
+                            elif type == "heavyweapons":
+                                emote = "[RED Heavy] -"
+                            elif type == "engineer":
+                                emote = "[RED Engie] -"
+                            elif type == "sniper":
+                                emote = "[RED Sniper] -"
+                            elif type == "spy":
+                                emote = "[RED Spy] -"
                         else:
                             if type == "scout":
-                                emote = client.get_emoji(728490510184087572)
+                                emote = "[BLU Scout] -"
                             elif type == "soldier":
-                                emote = client.get_emoji(728490509739229185)
+                                emote = "[BLU Solly] -"
+                            elif type == "pyro":
+                                emote = "[BLU Pyro] -"
                             elif type == "demoman":
-                                emote = client.get_emoji(728490509366198284)
+                                emote = "[BLU Demo] -"
+                            elif type == "heavyweapons":
+                                emote = "[BLU Heavy] -"
+                            elif type == "engineer":
+                                emote = "[BLU Engie] -"
+                            elif type == "sniper":
+                                emote = "[BLU Sniper] -"
+                            elif type == "spy":
+                                emote = "[BLU Spy] -"
 
                     all_players += [[names[key], emote, score]]
 
