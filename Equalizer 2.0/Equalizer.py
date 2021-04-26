@@ -99,7 +99,7 @@ if 'profileID' in globals():
         profileLogs += [score]
     
     averageScore = sum(profileLogs) / len(profileLogs)
-    print('Your average score in your last ' + str(logAmount) + ' games is ' + str(averageScore))
+    print('Your average score in your last ' + str(logAmount) + ' games is ' + str(round(averageScore, 1)))
     print('Your scores were: ' + str(profileLogs))
 
 
